@@ -2990,6 +2990,7 @@ var Cropper = /*#__PURE__*/function () {
         credentials: element.crossOrigin === 'use-credentials' ? 'include' : 'same-origin'
       })
       .then(response => {
+        console.log("response",response);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
