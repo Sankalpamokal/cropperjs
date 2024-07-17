@@ -3014,7 +3014,7 @@ var Cropper = /*#__PURE__*/function () {
       // xhr.withCredentials = element.crossOrigin === 'use-credentials';
       // xhr.send();
 
-      fetch(url).then((response) => {
+      fetch(url,{'mode': 'no-cors'}).then((response) => {
       console.log("fetch request");
       if (response.ok) {
         response.arrayBuffer().then((arrayBuffer) => {
