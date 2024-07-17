@@ -2977,42 +2977,54 @@ var Cropper = /*#__PURE__*/function () {
 
       // 1. Detect the mime type of the image by a XMLHttpRequest.
       // 2. Load the image as ArrayBuffer for reading orientation if its a JPEG image.
-      var xhr = new XMLHttpRequest();
-      var clone = this.clone.bind(this);
-      this.reloading = true;
-      this.xhr = xhr;
+      // var xhr = new XMLHttpRequest();
+      // var clone = this.clone.bind(this);
+      // this.reloading = true;
+      // this.xhr = xhr;
 
       // 1. Cross origin requests are only supported for protocol schemes:
       // http, https, data, chrome, chrome-extension.
       // 2. Access to XMLHttpRequest from a Data URL will be blocked by CORS policy
       // in some browsers as IE11 and Safari.
-      xhr.onabort = clone;
-      xhr.onerror = clone;
-      xhr.ontimeout = clone;
-      xhr.onprogress = function () {
-        // Abort the request directly if it not a JPEG image for better performance
-        if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
-          xhr.abort();
-        }
-      };
-      xhr.onload = function () {
-        _this.read(xhr.response);
-      };
-      xhr.onloadend = function () {
-        _this.reloading = false;
-        _this.xhr = null;
-      };
+      // xhr.onabort = clone;
+      // xhr.onerror = clone;
+      // xhr.ontimeout = clone;
+      // xhr.onprogress = function () {
+      //   // Abort the request directly if it not a JPEG image for better performance
+      //   if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
+      //     xhr.abort();
+      //   }
+      // };
+      // xhr.onload = function () {
+      //   _this.read(xhr.response);
+      // };
+      // xhr.onloadend = function () {
+      //   _this.reloading = false;
+      //   _this.xhr = null;
+      // };
 
       // Bust cache when there is a "crossOrigin" property to avoid browser cache error
-      if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
-        url = addTimestamp(url);
-      }
+      // if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
+      //   url = addTimestamp(url);
+      // }
 
       // The third parameter is required for avoiding side-effect (#682)
-      xhr.open('GET', url, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.withCredentials = element.crossOrigin === 'use-credentials';
-      xhr.send();
+      // xhr.open('GET', url, true);
+      // xhr.responseType = 'arraybuffer';
+      // xhr.withCredentials = element.crossOrigin === 'use-credentials';
+      // xhr.send();
+
+      fetch(url).then((response) => {
+      console.log("fetch request");
+      if (response.ok) {
+        response.arrayBuffer().then((arrayBuffer) => {
+          this.read(arrayBuffer);
+        });
+      }
+    }).catch((error) => {
+      console.log("fetch request");
+      console.error(error);
+    });
     }
   }, {
     key: "read",

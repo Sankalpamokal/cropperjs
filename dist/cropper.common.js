@@ -3014,7 +3014,7 @@ var Cropper = /*#__PURE__*/function () {
       xhr.open('GET', url, true);
       xhr.responseType = 'arraybuffer';
       xhr.withCredentials = element.crossOrigin === 'use-credentials';
-      // xhr.send();
+      xhr.send();
     }
   }, {
     key: "read",
