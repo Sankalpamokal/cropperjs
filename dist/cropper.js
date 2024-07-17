@@ -2961,64 +2961,62 @@
         if (!options.rotatable && !options.scalable) {
           options.checkOrientation = false;
         }
-
+    
         // Only IE10+ supports Typed Arrays
         if (!options.checkOrientation || !window.ArrayBuffer) {
           this.clone();
           return;
         }
-
+    
         // Detect the mime type of the image directly if it is a Data URL
         if (REGEXP_DATA_URL.test(url)) {
           // Read ArrayBuffer from Data URL of JPEG images directly for better performance
           if (REGEXP_DATA_URL_JPEG.test(url)) {
             this.read(dataURLToArrayBuffer(url));
           } else {
-            // Only a JPEG image may contains Exif Orientation information,
+            // Only a JPEG image may contain Exif Orientation information,
             // the rest types of Data URLs are not necessary to check orientation at all.
             this.clone();
           }
           return;
         }
-
-        // 1. Detect the mime type of the image by a XMLHttpRequest.
+    
+        // 1. Detect the mime type of the image by a fetch request.
         // 2. Load the image as ArrayBuffer for reading orientation if its a JPEG image.
-        var xhr = new XMLHttpRequest();
-        var clone = this.clone.bind(this);
         this.reloading = true;
-        this.xhr = xhr;
-
-        // 1. Cross origin requests are only supported for protocol schemes:
-        // http, https, data, chrome, chrome-extension.
-        // 2. Access to XMLHttpRequest from a Data URL will be blocked by CORS policy
-        // in some browsers as IE11 and Safari.
-        xhr.onabort = clone;
-        xhr.onerror = clone;
-        xhr.ontimeout = clone;
-        xhr.onprogress = function () {
-          // Abort the request directly if it not a JPEG image for better performance
-          if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
-            xhr.abort();
-          }
-        };
-        xhr.onload = function () {
-          _this.read(xhr.response);
-        };
-        xhr.onloadend = function () {
-          _this.reloading = false;
-          _this.xhr = null;
-        };
-
+    
         // Bust cache when there is a "crossOrigin" property to avoid browser cache error
         if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
           url = addTimestamp(url);
         }
-
-        // The third parameter is required for avoiding side-effect (#682)
-        xhr.open('GET', url, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.withCredentials = element.crossOrigin === 'use-credentials';
-        xhr.send();
+    
+        fetch(url, {
+          method: 'GET',
+          mode: 'no-cors',
+          // credentials: element.crossOrigin === 'use-credentials' ? 'include' : 'same-origin'
+        })
+        .then(response => {
+          console.log("response",response);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+    
+          const contentType = response.headers.get('content-type');
+          if (contentType !== MIME_TYPE_JPEG) {
+            throw new Error('Not a JPEG image');
+          }
+    
+          return response.arrayBuffer();
+        })
+        .then(arrayBuffer => {
+          _this.read(arrayBuffer);
+          _this.reloading = false;
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+          _this.clone();
+          _this.reloading = false;
+        });
       }
     }, {
       key: "read",
