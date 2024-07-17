@@ -173,17 +173,17 @@ class Cropper {
     // xhr.withCredentials = element.crossOrigin === 'use-credentials';
     // xhr.send();
 
-    fetch(url).then((response) => {
-      console.log("fetch request");
-      if (response.ok) {
-        response.arrayBuffer().then((arrayBuffer) => {
-          this.read(arrayBuffer);
-        });
-      }
-    }).catch((error) => {
-      console.log("fetch request");
-      console.error(error);
-    });
+    // fetch(url).then((response) => {
+    //   console.log("fetch request");
+    //   if (response.ok) {
+    //     response.arrayBuffer().then((arrayBuffer) => {
+    //       this.read(arrayBuffer);
+    //     });
+    //   }
+    // }).catch((error) => {
+    //   console.log("fetch request");
+    //   console.error(error);
+    // });
   }
 
   read(arrayBuffer) {
