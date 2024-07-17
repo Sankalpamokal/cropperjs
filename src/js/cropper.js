@@ -132,40 +132,40 @@ class Cropper {
 
     // 1. Detect the mime type of the image by a XMLHttpRequest.
     // 2. Load the image as ArrayBuffer for reading orientation if its a JPEG image.
-    const xhr = new XMLHttpRequest();
-    const clone = this.clone.bind(this);
+    // const xhr = new XMLHttpRequest();
+    // const clone = this.clone.bind(this);
 
-    this.reloading = true;
-    this.xhr = xhr;
+    // this.reloading = true;
+    // this.xhr = xhr;
 
     // 1. Cross origin requests are only supported for protocol schemes:
     // http, https, data, chrome, chrome-extension.
     // 2. Access to XMLHttpRequest from a Data URL will be blocked by CORS policy
     // in some browsers as IE11 and Safari.
-    xhr.onabort = clone;
-    xhr.onerror = clone;
-    xhr.ontimeout = clone;
+    // xhr.onabort = clone;
+    // xhr.onerror = clone;
+    // xhr.ontimeout = clone;
 
-    xhr.onprogress = () => {
-      // Abort the request directly if it not a JPEG image for better performance
-      if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
-        xhr.abort();
-      }
-    };
+    // xhr.onprogress = () => {
+    //   // Abort the request directly if it not a JPEG image for better performance
+    //   if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
+    //     xhr.abort();
+    //   }
+    // };
 
-    xhr.onload = () => {
-      this.read(xhr.response);
-    };
+    // xhr.onload = () => {
+    //   this.read(xhr.response);
+    // };
 
-    xhr.onloadend = () => {
-      this.reloading = false;
-      this.xhr = null;
-    };
+    // xhr.onloadend = () => {
+    //   this.reloading = false;
+    //   this.xhr = null;
+    // };
 
     // Bust cache when there is a "crossOrigin" property to avoid browser cache error
-    if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
-      url = addTimestamp(url);
-    }
+    // if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
+    //   url = addTimestamp(url);
+    // }
 
     // The third parameter is required for avoiding side-effect (#682)
     // xhr.open('GET', url, true);
